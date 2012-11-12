@@ -4,7 +4,7 @@ Monte-Carlo
 
 A simple implementation of the Monte-Carlo simulation for pricing options.
 
-Contents:
+*Contents:*
 
 1.payoff: the interface and classes responsible for calculating the payoffs of 
           different kind of options.
@@ -19,9 +19,9 @@ Contents:
 
 5.wrapper: template wrapper to handle pointers and memory management.
 
+:
 
-
-Timeline:
+*Timeline:*
 
 Nov.10: Finished basic implementation of the option payoff and statistics gatherer class.
 
