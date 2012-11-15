@@ -1,5 +1,8 @@
 /*
- * implementation of the random base class
+ * implementation of the random number generator base class and linear congruential
+ *      uniform random number generator.
+ *
+ * Yongyi Ye
  */
 
 #include<stdlib.h>
@@ -9,66 +12,85 @@
 
 using namespace std;
 
-/* constants for use of the Beasley-Springer-Moro method */
-const double a0 = 2.50662823884;
-const double a1 = -18.61500062529;
-const double a2 = 41.39119773534;
-const double a3 = -25.44106049637;
-
-const double b0 = -8.47351093090;
-const double b1 = 23.08336743743;
-const double b2 = -21.06224101826;
-const double b3 = 3.13082909833;
-
-const double c0 = 0.3374754822726147;
-const double c1 = 0.9761690190917186;
-const double c2 = 0.1607979714918209;
-const double c3 = 0.0276438810333863;
-const double c4 = 0.0038405729373609;
-const double c5 = 0.0003951896511919;
-const double c6 = 0.0000321767881768;
-const double c7 = 0.0000002888167364;
-const double c8 = 0.0000003960315187;
-
-/**** Beasley-Springer-Moro ****/
-double bsm(double u);
-/*
- * the Beasley-Springer-Moro Inverse Transform Method
+/* outline of the linear congruential method
  *
- * input: u - a uniformly distributed number in (0,1)
- * output: the inverse transformed standard normal number
+ * x_(i+1) = (a*x_i + c) mod m
+ * u_(i+1) = x_(i+1)/m
+ *
+ * return u_(i+1)
+ *
  */
 
 
-/* Random base class function */
-double Random::get_normal(){
-    double u = get_uniform();
-    double n = bsm(u);
-    return n;
+/* the constants used in the linear congruential method */
+const int a = 39373;
+const int c = 0;
+const long  m = pow(2, 31) - 1;
+const double reciprocal = 1.0/static_cast<double>(m);
+
+/* linear congruential generator */
+//constructor
+Lcg::Lcg(double seed_):seed(seed_), current(seed_){}
+
+//get the next uniformly distributed number
+double Lcg::get_uniform(){
+    current = (a*current + c) % m;
+    return (current * reciprocal);
+}
+
+//reset the generator
+void Lcg::reset(){
+    current = seed;
+}
+
+//set the seed of the generator
+void Lcg::set_seed(double seed_){
+    seed = seed_;
+    current = seed_;
+}
+
+//skip a given number of uniform numbers generated
+void Lcg::skip(int number){
+    for(int i=0; i<number; i++){
+        get_uniform();
+    }
 }
 
 
+/* the random base class */
+Random::Random(int step_, int seed_):step(step_), inner(seed_){}
 
-/* implementation of bsm */
-double bsm(double u){
-    double y = u-0.5;
-    double x;
+Random::Random(const Random& input):step(input.step), inner(input.inner){}
 
-    if(fabs(y) < 0.42){
-        double r = y*y;
-        x = y * (((a3*r + a2)*r + a1)*r + a0)/((((b3*r + b2)*r + b1)*r + b0)*r +1 );
+Random::~Random(){}
+
+Random& Random::operator= (const Random& input){
+    step = input.step;
+    inner = input.inner;
+    return (*this);
+}
+
+//get a collection of uniform random numbers in (0,1)
+deque<double> Random::get_uniform(){
+    deque<double> container;
+    for(int i=0; i<step; i++){
+        container.push_back(inner.get_uniform());
     }
-    else{
-        double r = u;
-        if(y>0){ r = 1-u; }
+    return container;
+}
 
-        r = log(-log(r));
-        x = c0 + r*(c1 + r*(c2 + r*(c3 + r*(c4 + r*(c5 + r*(c6 + r*(c7 + r*c8)))))));
+//set seed of the inner generator
+void Random::set_seed(int seed_){
+    inner.set_seed(seed_);
+}
 
-        if(y<0){ x = -x; }
-    }
+//reset the inner generator
+void Random::reset(){
+    inner.reset();
+}
 
-    return x;
-
+//skip a given number of random numbers generated
+void Random::skip(int number){
+    inner.skip(number);
 }
 

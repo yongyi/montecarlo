@@ -14,10 +14,13 @@ A simple implementation of the Monte-Carlo simulation for pricing options.
 
 3.random: the interface for random number generators
 
-4.randomlcg: the random number generators using linear congruential method to generate
-             underlying uniformly distributed random numbers.
+4.randombsmoro: the random number generator that uses Beasley-Sringer-Moro inverse transform
+                method to generate standard normal from uniforms in (0,1).
 
-5.wrapper: template wrapper to handle pointers and memory management.
+5.randomboxmuller: the random number generator that uses Magsarlia-Bray version of Box-Muller
+                   method to generate standard normal from uniforms in (0,1).
+
+6.wrapper: template wrapper to handle pointers and memory management.
 
 :
 
@@ -28,3 +31,13 @@ Nov.10: Finished basic implementation of the option payoff and statistics gather
 Nov.12: Added a template wrapper class to handle pointers.
         Finished basic implementation of random number generator class 
         Added a random number generator using linear congruential method.
+
+Nov.14: Deleted randomlcg file. Moved the linear congruential generator implementation into
+        the random base class since it is the default/only uniform number generator that will
+        be used.
+
+        Changed the random base class so that it utilizes differnt methods to generate standard
+        normals and has a default uniform number generator.
+
+        Added two derived random number generators that uses Beasley-Sringer-Moro and Magsarlia-Bray
+        version of Box-Muller methods.
