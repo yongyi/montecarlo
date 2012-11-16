@@ -1,25 +1,24 @@
 /*
- * The random number generator that inherits from the random base class and
- *      uses the Beasley-Springer-Moro Inverse Transformation Method to
- *      generate standard normal random numbers from a collection of uniform
- *      random numbers in (0,1).
+ * The random number generator inherits from the random base class that uses the
+ *      Acceptance-Rejection method to generate standard normal random numbers
+ *      from a collection of uniform random numbers in (0,1)
  *
  * Yongyi Ye
  */
 
-#ifndef RANDOMBSMORO_HPP
-#define RANDOMBSMORO_HPP
+#ifndef RANDOMACCEPTREJECT_HPP
+#define RANDOMACCEPTREJECT_HPP
 
 #include"random.hpp"
 
-class RandomBsmoro: public Random{
+class RandomAcceptReject: public Random{
 
     public:
         //constructor, destructor, assignment operator
-        RandomBsmoro(int step_, int seed_);
-        RandomBsmoro(const RandomBsmoro& input);
-        virtual ~RandomBsmoro();
-        virtual RandomBsmoro& operator= (const RandomBsmoro& input);
+        RandomAcceptReject(int step_, int seed_);
+        RandomAcceptReject(const RandomAcceptReject& input);
+        virtual ~RandomAcceptReject();
+        virtual RandomAcceptReject& operator= (const RandomAcceptReject& input);
 
     /*
      *  no need to override the following functions - use the base class one
@@ -50,6 +49,6 @@ class RandomBsmoro: public Random{
     private:
         /* no additional data members needed */
 
-};
+    };
 
 #endif

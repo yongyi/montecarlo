@@ -10,6 +10,9 @@
 #include<string>
 using std::string;
 
+#include<deque>
+using std::deque;
+
 #include"statgatherer.hpp"
 
 class Payoff{
@@ -18,8 +21,8 @@ class Payoff{
 
     public:
 
-        //overloaded operator that returns the payoff of an option by taking a statistics gatherer object
-        virtual double operator()(StatGatherer gather) = 0;
+        //payoff function that returns the payoff of an option by taking a deque of doubles
+        virtual double payoff(deque<double> simulation) = 0;
 
         //function that returns a string description of the option
         virtual string to_string() const = 0;
@@ -38,7 +41,7 @@ class CallPayoff: public Payoff{
     public:
         CallPayoff(double k_);
 
-        double operator()(StatGatherer gather);
+        double payoff(deque<double> simulation);
         string to_string() const;
         Payoff* clone() const;
 
@@ -52,7 +55,7 @@ class PutPayoff: public Payoff{
     public:
         PutPayoff(double k_);
 
-        double operator()(StatGatherer gather);
+        double payoff(deque<double> simulation);
         string to_string() const;
         Payoff* clone() const;
 

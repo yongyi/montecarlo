@@ -59,11 +59,14 @@ class Random{
         //skip the given number of numbers generated
         virtual void skip(int number);
 
+        //get the number of steps in one pass of simulation
+        virtual int get_step() const;
+
         //get a collection of standard normally distributed number
         virtual deque<double> get_normal() = 0;
 
         //returns a pointer to the copy of the generator itself (virtual copy construction)
-        virtual Random* clone() = 0;
+        virtual Random* clone() const = 0;
 
     private:
         int step;   //the number of UNIFORM random numbers to be generated in one pass

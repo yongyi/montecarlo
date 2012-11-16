@@ -2,6 +2,8 @@
 Monte-Carlo
 ===========
 
+*need to debug*
+
 A simple implementation of the Monte-Carlo simulation for pricing options.
 
 *Contents:*
@@ -20,7 +22,16 @@ A simple implementation of the Monte-Carlo simulation for pricing options.
 5.randomboxmuller: the random number generator that uses Magsarlia-Bray version of Box-Muller
                    method to generate standard normal from uniforms in (0,1).
 
-6.wrapper: template wrapper to handle pointers and memory management.
+6.randomacceptreject: the random number generator that uses Acceptance-Rejection method to
+                       generate standard normals from uniforms in (0,1).
+
+7.antithetic: the random number generator that takes an underlying generator (item 4, 5, or 6)
+               and applies the antithetic variance reduction technique to generate standard
+               normals.
+
+8.wrapper: template wrapper to handle pointers and memory management.
+
+9.monte-carlo: contains the functions to run Monte-Carlo simulation
 
 :
 
@@ -32,10 +43,14 @@ Nov.12: Added a template wrapper class to handle pointers.
         Finished basic implementation of random number generator class 
         Added a random number generator using linear congruential method.
 
-Nov.14:     Deleted randomlcg file. Moved the linear congruential generator implementation into
+Nov.14: Deleted randomlcg file. Moved the linear congruential generator implementation into
         the random base class since it is the default/only uniform number generator that will
         be used.
-            Changed the random base class so that it utilizes differnt methods to generate standard
+        Changed the random base class so that it utilizes differnt methods to generate standard
         normals and has a default uniform number generator.
-            Added two derived random number generators that uses Beasley-Sringer-Moro and Magsarlia-Bray
+        Added two derived random number generators that uses Beasley-Sringer-Moro and Magsarlia-Bray
         version of Box-Muller methods.
+
+Nov.15: Added generator using the Acceptance-Rejection method.
+        Added a generator using antithetic variance reduction technique for Monte-Carlo.
+        Added the file that runs a monte-carlo simulation functions.

@@ -85,6 +85,6 @@ deque<double> RandomBsmoro::get_normal(){
     return container;
 }
 
-Random* RandomBsmoro::clone(){
+Random* RandomBsmoro::clone() const{
     return new RandomBsmoro(*this);
 }

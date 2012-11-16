@@ -17,7 +17,7 @@ class RandomBoxMuller: public Random{
         //constructor, destructor, assignment operator
         RandomBoxMuller(int step_, int seed_);
         RandomBoxMuller(const RandomBoxMuller& input);
-        ~RandomBoxMuller();
+        virtual ~RandomBoxMuller();
         virtual RandomBoxMuller& operator= (const RandomBoxMuller& input);
 
     /*
@@ -34,6 +34,9 @@ class RandomBoxMuller: public Random{
 
         *skip the given number of numbers generated
         virtual void skip(int number);
+
+        //get the number of steps in one pass of simulation
+        virtual int get_step() const;
      *
      */
 
@@ -41,7 +44,7 @@ class RandomBoxMuller: public Random{
         virtual deque<double> get_normal();
 
         //returns a pointer to the copy of the generator itself (virtual copy construction)
-        virtual Random* clone();
+        virtual Random* clone() const;
 
     private:
         /* no additional data members needed */

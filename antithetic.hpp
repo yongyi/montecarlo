@@ -1,27 +1,31 @@
 /*
- * The random number generator that inherits from the random base class and
- *      uses the Beasley-Springer-Moro Inverse Transformation Method to
- *      generate standard normal random numbers from a collection of uniform
- *      random numbers in (0,1).
+ * Random number generator that generates a collection of standard normal random numbers
+ *      using the antithetic variance reduction technique by decorating the random number
+ *      generator class.
  *
  * Yongyi Ye
  */
 
-#ifndef RANDOMBSMORO_HPP
-#define RANDOMBSMORO_HPP
+#ifndef ANTITHETIC_HPP
+#define ANTITHETIC_HPP
+
+#include<deque>
 
 #include"random.hpp"
+#include"wrapper.hpp"
 
-class RandomBsmoro: public Random{
+using namespace std;
+
+class Antithetic: public Random{
 
     public:
         //constructor, destructor, assignment operator
-        RandomBsmoro(int step_, int seed_);
-        RandomBsmoro(const RandomBsmoro& input);
-        virtual ~RandomBsmoro();
-        virtual RandomBsmoro& operator= (const RandomBsmoro& input);
+        Antithetic(int step_, int seed_, const Random& inner_);
+        Antithetic(const Antithetic& input);
+        virtual ~Antithetic();
+        virtual Antithetic& operator= (const Antithetic& input);
 
-    /*
+   /*
      *  no need to override the following functions - use the base class one
 
         *get a collection of uniformly distributed number in (0,1)
@@ -35,9 +39,6 @@ class RandomBsmoro: public Random{
 
         *skip the given number of numbers generated
         virtual void skip(int number);
-
-        //get the number of steps in one pass of simulation
-        virtual int get_step() const;
      *
      */
 
@@ -48,8 +49,9 @@ class RandomBsmoro: public Random{
         virtual Random* clone() const;
 
     private:
-        /* no additional data members needed */
-
+        Wrapper<Random> inner;      //the inner standard normal random number generator
+        deque<double> antithetic;   //the collection of antithetic variables
+        bool use_antithetic;        //boolean indicating whether to use antithetic variables or not
 };
 
 #endif

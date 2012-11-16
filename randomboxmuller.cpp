@@ -50,8 +50,8 @@ deque<double> RandomBoxMuller::get_normal(){
             index = index+2;
         }
 
-        //make sure the last two numbers get from the loop are not repetitive
-        if( (index+1)>=uniform.size() && x>1){ break; } /*need further check */
+        //make sure the last two numbers get from the loop are valid
+        if( (index+1)>=uniform.size() && x>1){ break; }
 
         double y = sqrt(-2 * (log(x)/x));
 
@@ -65,6 +65,6 @@ deque<double> RandomBoxMuller::get_normal(){
     return container;
 }
 
-Random* RandomBoxMuller::clone(){
+Random* RandomBoxMuller::clone() const{
     return new RandomBoxMuller(*this);
 }

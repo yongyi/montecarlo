@@ -5,6 +5,7 @@
 #include<string>
 #include<sstream>
 #include<algorithm>
+#include<deque>
 
 #include"statgatherer.hpp"
 #include"payoff.hpp"
@@ -14,8 +15,8 @@ using namespace std;
 /* Call Payoff */
 CallPayoff::CallPayoff(double k_):k(k_){}
 
-double CallPayoff::operator()(StatGatherer gather){
-    return max<double>(gather.get_last()-k, 0);
+double CallPayoff::payoff(deque<double> simulation){
+    return max<double>(simulation[simulation.size()-1]-k, 0);
 }
 
 string CallPayoff::to_string() const{
@@ -32,8 +33,8 @@ Payoff* CallPayoff::clone() const{
 /* Put Payoff */
 PutPayoff::PutPayoff(double k_):k(k){}
 
-double PutPayoff::operator()(StatGatherer gather){
-    return max<double>(k-gather.get_last(), 0);
+double PutPayoff::payoff(deque<double> simulation){
+    return max<double>(k-simulation[simulation.size()-1], 0);
 }
 
 string PutPayoff::to_string() const{

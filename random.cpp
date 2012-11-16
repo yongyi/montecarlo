@@ -94,3 +94,7 @@ void Random::skip(int number){
     inner.skip(number);
 }
 
+//get the number of steps in one pass of simulation
+int Random::get_step() const{
+    return step;
+}
