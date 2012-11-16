@@ -8,6 +8,8 @@
 #include<stdlib.h>
 #include<math.h>
 
+#include<iostream>
+
 #include"random.hpp"
 
 using namespace std;
@@ -30,7 +32,7 @@ const double reciprocal = 1.0/static_cast<double>(m);
 
 /* linear congruential generator */
 //constructor
-Lcg::Lcg(double seed_):seed(seed_), current(seed_){}
+Lcg::Lcg(int seed_):seed(seed_), current(seed_){}
 
 //get the next uniformly distributed number
 double Lcg::get_uniform(){
@@ -44,7 +46,7 @@ void Lcg::reset(){
 }
 
 //set the seed of the generator
-void Lcg::set_seed(double seed_){
+void Lcg::set_seed(int seed_){
     seed = seed_;
     current = seed_;
 }

@@ -18,11 +18,11 @@ class Lcg{
 
     private:
         int seed;   //the initial seed of the generator
-        int current;//the current seed to compute the next random number
+        long current;//the current seed to compute the next random number
 
     public:
         //constructor that takes in a seed_ number
-        Lcg(double seed_);
+        Lcg(int seed_);
 
         //get the next uniform number
         double get_uniform();
@@ -31,7 +31,7 @@ class Lcg{
         void reset();
 
         //set the seed of the generator
-        void set_seed(double seed_);
+        void set_seed(int seed_);
 
         //skip a given number of numbers generated
         void skip(int number);

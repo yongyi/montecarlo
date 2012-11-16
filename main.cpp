@@ -32,9 +32,10 @@ void print(const deque<double>& input){
 int main(){
 
     int seed = 1;
-    int N = 10000 * pow(2,9);
+    //int N = 10000 * pow(2,9);
+    int N = 10;
 
-    RandomBsmoro bsm(seed, N);
+    RandomBsmoro bsm(N, seed);
     RandomBoxMuller box(seed, N);
     RandomAcceptReject ar(seed, N);
 
@@ -42,20 +43,29 @@ int main(){
 
     deque<double> holder;
 
+    cout << "bsm" << endl;
     holder = bsm.get_normal();
     print(holder);
 
+    cout << "box" << endl;
+    holder.clear();
     holder = box.get_normal();
     print(holder);
 
+    cout << "ar" << endl;
+    holder.clear();
     holder = ar.get_normal();
     print(holder);
 
+    cout << "anti" << endl;
+    holder.clear();
     holder = anti.get_normal();
     print(holder);
 
+    holder.clear();
     holder = anti.get_normal();
     print(holder);
+
 
 
 }
