@@ -36,10 +36,10 @@ int main(){
     int N = 10;
 
     RandomBsmoro bsm(N, seed);
-    RandomBoxMuller box(seed, N);
-    RandomAcceptReject ar(seed, N);
+    RandomBoxMuller box(N, seed);
+    RandomAcceptReject ar(N, seed);
 
-    Antithetic anti(seed, N, ar);
+    Antithetic anti(N,seed, ar);
 
     deque<double> holder;
 

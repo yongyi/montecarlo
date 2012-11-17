@@ -54,3 +54,5 @@ Nov.14: Deleted randomlcg file. Moved the linear congruential generator implemen
 Nov.15: Added generator using the Acceptance-Rejection method.
         Added a generator using antithetic variance reduction technique for Monte-Carlo.
         Added the file that runs a monte-carlo simulation functions.
+
+Nov.16: Fixed the bugs to generate standard normal random numbers in the generators.

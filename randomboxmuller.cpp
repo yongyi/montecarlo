@@ -8,6 +8,7 @@
 
 #include<deque>
 #include<math.h>
+#include<limits.h>
 
 #include"randomboxmuller.hpp"
 
@@ -32,7 +33,7 @@ deque<double> RandomBoxMuller::get_normal(){
     //the uniform numbers get from the deque
     double u1;
     double u2;
-    double x = 7;
+    double x = INT_MAX;
 
     //index of the position in the uniform deque so far
     int index = 0;
@@ -60,6 +61,9 @@ deque<double> RandomBoxMuller::get_normal(){
 
         container.push_back(z1);
         container.push_back(z2);
+
+        //reset the value of x
+        x = INT_MAX;
     }
 
     return container;

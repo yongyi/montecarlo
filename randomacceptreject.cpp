@@ -57,6 +57,9 @@ deque<double> RandomAcceptReject::get_normal(){
 
         if(u3 <= 0.5){ x = -x; }
         container.push_back(x);
+
+        //reset the value of x
+        u2 = INT_MAX;
     }
 
     return container;
