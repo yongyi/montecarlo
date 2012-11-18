@@ -56,3 +56,8 @@ Nov.15: Added generator using the Acceptance-Rejection method.
         Added the file that runs a monte-carlo simulation functions.
 
 Nov.16: Fixed the bugs to generate standard normal random numbers in the generators.
+
+Nov.18: Modified the condition checks in Box-Muller and Acceptance-Rejection generators.
+        Corrected minor issues and Acceptance-Rejection generator.
+        Separated Monte-Carlo functions into hpp and cpp files.
+        Wrote a demonstration of the use of Monte-Carlo function.
