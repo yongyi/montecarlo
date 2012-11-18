@@ -76,7 +76,9 @@ int main(){
     long n = 1000000;
     CallPayoff call(50);
     RandomBsmoro gen(1, 1);
-    double price = monte_carlo(s1, vol1, t1, r1, q1, n, call, gen);
+    bool use_control_variate = false;
+    bool use_moment_matching = true;
+    double price = monte_carlo(s1, vol1, t1, r1, q1, n, call, gen, use_control_variate, use_moment_matching);
     cout << "price: " << price << endl;
 
 }
