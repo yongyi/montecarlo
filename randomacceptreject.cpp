@@ -43,7 +43,7 @@ deque<double> RandomAcceptReject::get_normal(){
 
     while(index+2 < uniform.size()){
 
-        while((index+2)<uniform.size() && u2>sqrt(2.0*exp(1)/M_PI)*exp(-0.5*(x-1)*(x-1))){
+        while(u2>exp(-0.5*(x-1)*(x-1)) && (index+2)<uniform.size()){
             u1 = uniform[index];
             u2 = uniform[index+1];
             u3 = uniform[index+2];
@@ -53,7 +53,8 @@ deque<double> RandomAcceptReject::get_normal(){
         }
 
         //make sure the last numbers get from the loop are valid
-        if((index+2)>=uniform.size() && u2>sqrt(2.0*exp(1)/M_PI)*exp(-0.5*(x-1)*(x-1))){ break; }
+        //if((index+2)>=uniform.size() && u2>exp(-0.5*(x-1)*(x-1))){ break; }
+        if( u2 > exp(-0.5*(x-1)*(x-1))){ break; }
 
         if(u3 <= 0.5){ x = -x; }
         container.push_back(x);

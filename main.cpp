@@ -17,7 +17,7 @@
 
 #include"payoff.hpp"
 #include"statgatherer.hpp"
-//#include"montecarlo.cpp"
+#include"montecarlo.hpp"
 
 using namespace std;
 
@@ -67,5 +67,16 @@ int main(){
     print(holder);
 
 
+    /* demonstration of use of monte-carlo */
+    double s1 = 50;
+    double vol1 = 0.2;
+    double t1 = 0.5;
+    double r1 = 0.05;
+    double q1 = 0.03;
+    long n = 1000000;
+    CallPayoff call(50);
+    RandomBsmoro gen(1, 1);
+    double price = monte_carlo(s1, vol1, t1, r1, q1, n, call, gen);
+    cout << "price: " << price << endl;
 
 }

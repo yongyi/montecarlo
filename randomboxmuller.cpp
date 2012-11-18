@@ -52,7 +52,8 @@ deque<double> RandomBoxMuller::get_normal(){
         }
 
         //make sure the last two numbers get from the loop are valid
-        if( (index+1)>=uniform.size() && x>1){ break; }
+        //if( (index+1)>=uniform.size() && x>1){ break; }
+        if(x>1){ break; }
 
         double y = sqrt(-2 * (log(x)/x));
 
