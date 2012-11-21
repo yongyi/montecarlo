@@ -16,7 +16,7 @@
 
 using namespace std;
 
-RandomAcceptReject::RandomAcceptReject(int step_, int seed_):Random(step_, seed_){}
+RandomAcceptReject::RandomAcceptReject(int seed_):Random(seed_){}
 
 RandomAcceptReject::RandomAcceptReject(const RandomAcceptReject& input):Random(input){}
 
@@ -28,7 +28,8 @@ RandomAcceptReject& RandomAcceptReject::operator= (const RandomAcceptReject& inp
 }
 
 /* acceptance-rejection method */
-deque<double> RandomAcceptReject::get_normal(){
+/* NEED TO MODIFY */
+deque< deque<double> > RandomAcceptReject::get_normal(int N, int n){
     deque<double> uniform(Random::get_uniform());
     deque<double> container;
 

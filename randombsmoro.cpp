@@ -63,7 +63,7 @@ double bsm(double u){
 
 
 /**** Beasley-Springer-Moro generator ****/
-RandomBsmoro::RandomBsmoro(int step_, int seed_):Random(step_, seed_){}
+RandomBsmoro::RandomBsmoro(int seed_):Random(seed_){}
 
 RandomBsmoro::RandomBsmoro(const RandomBsmoro& input): Random(input){}
 
@@ -75,7 +75,7 @@ RandomBsmoro& RandomBsmoro::operator= (const RandomBsmoro& input){
 }
 
 //use beasley-springer-moro method to get a chain of standard normals
-deque<double> RandomBsmoro::get_normal(){
+deque< deque<double> > RandomBsmoro::get_normal(int N, int n){
     deque<double> container(Random::get_uniform());
 
     for(int i=0; i<container.size(); i++){

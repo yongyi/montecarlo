@@ -61,3 +61,14 @@ Nov.18: Modified the condition checks in Box-Muller and Acceptance-Rejection gen
         Corrected minor issues and Acceptance-Rejection generator.
         Separated Monte-Carlo functions into hpp and cpp files.
         Wrote a demonstration of the use of Monte-Carlo function.
+
+Nov.20: Corrected minor issue in the Monte-Carlo simulation function - forgot to discount the option
+        payoffs to exp(-rt).
+        Changed the definition of the random number generators (get rid of the step attribute),changed
+        the declaration of the get_uniform() and get_normal() functions to make them more flextible to
+        fit the use of Monte-Carlo simulation (takes in arguments to know how many random numbers needed
+        to be generated and how many simulations needed to perform in the whole simulation, returns a 
+        2-dimensional deque of doubles). 
+        
+        
+        Work to be done: need to redefine the get_normal() functions.

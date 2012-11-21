@@ -42,13 +42,13 @@ class Random{
 
     public:
         //constructor,  destructor, and assignment operator
-        Random(int step_, int seed_);
+        Random(int seed_);
         Random(const Random& input);
         virtual ~Random();
         virtual Random& operator= (const Random& input);
 
-        //get a collection of uniformly distributed number in (0,1)
-        virtual deque<double> get_uniform();
+        //get a collection of N uniformly distributed numbers in (0,1)
+        virtual deque<double> get_uniform(int N);
 
         //set the seed of the generator with a given seed_
         virtual void set_seed(int seed_);
@@ -59,17 +59,14 @@ class Random{
         //skip the given number of numbers generated
         virtual void skip(int number);
 
-        //get the number of steps in one pass of simulation
-        virtual int get_step() const;
-
-        //get a collection of standard normally distributed number
-        virtual deque<double> get_normal() = 0;
+        //get a collection of standard normally distributed number for simulation
+        //      N uniforms needed for generating n simulations using normals
+        virtual deque< deque<double> > get_normal(int N, int n) = 0;
 
         //returns a pointer to the copy of the generator itself (virtual copy construction)
         virtual Random* clone() const = 0;
 
     private:
-        int step;   //the number of UNIFORM random numbers to be generated in one pass
         Lcg inner; //the uniform number generator by default
 };
 

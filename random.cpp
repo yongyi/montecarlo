@@ -60,22 +60,21 @@ void Lcg::skip(int number){
 
 
 /* the random base class */
-Random::Random(int step_, int seed_):step(step_), inner(seed_){}
+Random::Random(int seed_):inner(seed_){}
 
-Random::Random(const Random& input):step(input.step), inner(input.inner){}
+Random::Random(const Random& input):inner(input.inner){}
 
 Random::~Random(){}
 
 Random& Random::operator= (const Random& input){
-    step = input.step;
     inner = input.inner;
     return (*this);
 }
 
-//get a collection of uniform random numbers in (0,1)
-deque<double> Random::get_uniform(){
+//get a collection of N uniform random numbers in (0,1)
+deque<double> Random::get_uniform(int N){
     deque<double> container;
-    for(int i=0; i<step; i++){
+    for(long i=0; i<N; i++){
         container.push_back(inner.get_uniform());
     }
     return container;
@@ -94,9 +93,4 @@ void Random::reset(){
 //skip a given number of random numbers generated
 void Random::skip(int number){
     inner.skip(number);
-}
-
-//get the number of steps in one pass of simulation
-int Random::get_step() const{
-    return step;
 }

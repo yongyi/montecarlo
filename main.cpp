@@ -34,7 +34,7 @@ int main(){
     int seed = 1;
     //int N = 10000 * pow(2,9);
     int N = 10;
-
+/*
     RandomBsmoro bsm(N, seed);
     RandomBoxMuller box(N, seed);
     RandomAcceptReject ar(N, seed);
@@ -65,9 +65,10 @@ int main(){
     holder.clear();
     holder = anti.get_normal();
     print(holder);
-
+*/
 
     /* demonstration of use of monte-carlo */
+/*
     double s1 = 50;
     double vol1 = 0.2;
     double t1 = 0.5;
@@ -80,5 +81,7 @@ int main(){
     bool use_moment_matching = true;
     double price = monte_carlo(s1, vol1, t1, r1, q1, n, call, gen, use_control_variate, use_moment_matching);
     cout << "price: " << price << endl;
+*/
+    cout << "Hello World" << endl;
 
 }

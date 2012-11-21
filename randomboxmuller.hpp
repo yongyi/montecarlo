@@ -15,7 +15,7 @@ class RandomBoxMuller: public Random{
 
     public:
         //constructor, destructor, assignment operator
-        RandomBoxMuller(int step_, int seed_);
+        RandomBoxMuller(int seed_);
         RandomBoxMuller(const RandomBoxMuller& input);
         virtual ~RandomBoxMuller();
         virtual RandomBoxMuller& operator= (const RandomBoxMuller& input);
@@ -23,8 +23,8 @@ class RandomBoxMuller: public Random{
     /*
      *  no need to override the following functions - use the base class one
 
-        *get a collection of uniformly distributed number in (0,1)
-        virtual deque<double> get_uniform();
+        *get a collection of N uniformly distributed numbers in (0,1)
+        virtual deque<double> get_uniform(int N);
 
         *set the seed of the generator with a given seed_
         virtual void set_seed(int seed_);
@@ -35,13 +35,12 @@ class RandomBoxMuller: public Random{
         *skip the given number of numbers generated
         virtual void skip(int number);
 
-        //get the number of steps in one pass of simulation
-        virtual int get_step() const;
      *
      */
 
-        //get a collection of standard normally distributed number
-        virtual deque<double> get_normal();
+        //get a collection of standard normally distributed numbers for simulation
+        //      N uniforms needed for generating n simulations using normals
+        virtual deque< deque<double> > get_normal(int N, int n);
 
         //returns a pointer to the copy of the generator itself (virtual copy construction)
         virtual Random* clone() const;

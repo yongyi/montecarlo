@@ -14,7 +14,7 @@
 
 using namespace std;
 
-RandomBoxMuller::RandomBoxMuller(int step_, int seed_):Random(step_, seed_){}
+RandomBoxMuller::RandomBoxMuller(int seed_):Random(seed_){}
 
 RandomBoxMuller::RandomBoxMuller(const RandomBoxMuller& input):Random(input){}
 
@@ -26,7 +26,8 @@ RandomBoxMuller& RandomBoxMuller::operator= (const RandomBoxMuller& input){
 }
 
 /* the Marsaglia-Bray version of Box-Muller */
-deque<double> RandomBoxMuller::get_normal(){
+/* NEED TO MODIFY */
+deque< deque<double> > RandomBoxMuller::get_normal(int N, int n){
     deque<double> uniform(Random::get_uniform());
     deque<double> container;
 
