@@ -27,8 +27,8 @@ RandomBoxMuller& RandomBoxMuller::operator= (const RandomBoxMuller& input){
 
 /* the Marsaglia-Bray version of Box-Muller */
 /* NEED TO MODIFY */
-deque< deque<double> > RandomBoxMuller::get_normal(int N, int n){
-    deque<double> uniform(Random::get_uniform());
+deque<double> RandomBoxMuller::get_normal(int N){
+    deque<double> uniform(Random::get_uniform(N));
     deque<double> container;
 
     //the uniform numbers get from the deque

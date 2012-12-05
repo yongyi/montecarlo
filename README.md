@@ -71,4 +71,8 @@ Nov.20: Corrected minor issue in the Monte-Carlo simulation function - forgot to
         2-dimensional deque of doubles). 
         
         
-        Work to be done: need to redefine the get_normal() functions.
+Dec.5 -- Started Version 2.0 of the Monte-Carlo pricer to better fit the requirement of the course and to increase convenience of use.
+
+Dec.5: Separated Monte-Carlo into Monte-Carlo general and Monte-Carlo vanilla such that the general
+       can be used to price ANY options with any forms of payoffs; the vanilla will be used only to
+       price vanilla European options (call or put) and the corresponding greeks.

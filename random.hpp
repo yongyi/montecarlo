@@ -60,8 +60,8 @@ class Random{
         virtual void skip(int number);
 
         //get a collection of standard normally distributed number for simulation
-        //      N uniforms needed for generating n simulations using normals
-        virtual deque< deque<double> > get_normal(int N, int n) = 0;
+        //      need to get N uniformly distributed numbers from the get_uniform function
+        virtual deque<double> get_normal(int N) = 0;
 
         //returns a pointer to the copy of the generator itself (virtual copy construction)
         virtual Random* clone() const = 0;

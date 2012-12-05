@@ -75,8 +75,8 @@ RandomBsmoro& RandomBsmoro::operator= (const RandomBsmoro& input){
 }
 
 //use beasley-springer-moro method to get a chain of standard normals
-deque< deque<double> > RandomBsmoro::get_normal(int N, int n){
-    deque<double> container(Random::get_uniform());
+deque<double> RandomBsmoro::get_normal(int N){
+    deque<double> container(Random::get_uniform(N));
 
     for(int i=0; i<container.size(); i++){
         //call the bsm method defined above

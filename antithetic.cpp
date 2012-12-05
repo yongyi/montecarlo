@@ -32,11 +32,11 @@ Antithetic& Antithetic::operator= (const Antithetic& input){
 
 /* antithetic variance reduction technique */
 /* NEED TO MODIFY */
-deque< deque<double> > Antithetic::get_normal(int N, int n){
+deque<double> Antithetic::get_normal(int N){
 
     if(use_antithetic == false){
         //generate a collection of normal random numbers using the inner generator
-        deque<double> container(inner->get_normal());
+        deque<double> container(inner->get_normal(N));
 
         //put the antithetic values in the antithetic deque
         for(int i=0; i<container.size(); i++){ antithetic.push_back(-container[i]); }

@@ -44,7 +44,7 @@ class Antithetic: public Random{
 
         //get a collection of standard normally distributed numbers for simulation
         //      N uniforms needed for generating n simulations using normals
-        virtual deque< deque<double> > get_normal(int N, int n);
+        virtual deque<double> get_normal(int N);
 
         //returns a pointer to the copy of the generator itself (virtual copy construction)
         virtual Random* clone() const;

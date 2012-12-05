@@ -29,8 +29,8 @@ RandomAcceptReject& RandomAcceptReject::operator= (const RandomAcceptReject& inp
 
 /* acceptance-rejection method */
 /* NEED TO MODIFY */
-deque< deque<double> > RandomAcceptReject::get_normal(int N, int n){
-    deque<double> uniform(Random::get_uniform());
+deque<double> RandomAcceptReject::get_normal(int N){
+    deque<double> uniform(Random::get_uniform(N));
     deque<double> container;
 
     //the uniform number get from the deque
