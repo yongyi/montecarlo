@@ -31,7 +31,7 @@ Payoff* CallPayoff::clone() const{
 
 
 /* Put Payoff */
-PutPayoff::PutPayoff(double k_):k(k){}
+PutPayoff::PutPayoff(double k_):k(k_){}
 
 double PutPayoff::payoff(deque<double> simulation){
     return max<double>(k-simulation[simulation.size()-1], 0);

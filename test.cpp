@@ -13,11 +13,11 @@
 #include"randomacceptreject.hpp"
 #include"randomboxmuller.hpp"
 #include"randombsmoro.hpp"
-#include"antithetic.hpp"
 
 #include"payoff.hpp"
 #include"statgatherer.hpp"
-#include"montecarlo.hpp"
+#include"montecarlogeneral.hpp"
+#include"montecarlovanilla.hpp"
 
 using namespace std;
 

@@ -18,6 +18,7 @@
 #include"statgatherer.hpp"
 #include"payoff.hpp"
 #include"wrapper.hpp"
+#include"montecarlovanilla.hpp"
 
 using namespace std;
 
@@ -57,198 +58,198 @@ double get_b_hat(const deque<double>& s, const deque<double>& v){
 
 }
 
-/**************************** start of function definition *******************************/
+/**************************** start of definition *******************************/
 
-/* monte-carlo simulation pricer */
-double MonteCarlo::price(int N){
-/*
- * inputs:
- * output:
- *      the simulated option price
+MonteCarloVanilla::MonteCarloVanilla(double s_, double k_, double vol_, double t_, double r_, double q_, string type_,
+                                        const Random& generator_, bool use_antithetic_, bool use_control_variate_,
+                                        bool use_moment_matching_):
+                                    s(s_), k(k_), vol(vol_), t(t_), r(r_), q(q_), type(type_), generator(generator_),
+                                    use_antithetic(use_antithetic_), use_control_variate(use_control_variate_),
+                                    use_moment_matching(use_moment_matching_),
+                                    price(-10), delta(-10), vega(-10){
+
+    assert(use_antithetic + use_control_variate + use_moment_matching <= 1);
+}
+
+void MonteCarloVanilla::reset_generator(){
+    generator->reset();
+}
+
+/* getter functions */
+double MonteCarloVanilla::get_price(){
+    return price;
+}
+
+double MonteCarloVanilla::get_delta(){
+    return delta;
+}
+
+double MonteCarloVanilla::get_vega(){
+    return vega;
+}
+
+/* function to run the monte-carlo function */
+void MonteCarloVanilla::run_monte_carlo(int N){
+    deque<double> normals(generator->get_normal(N));
+    if(use_antithetic){ antithetic_treatment(normals); }
+
+    compute_price(normals);
+    compute_delta(normals);
+    compute_vega(normals);
+    return;
+}
+
+/* Monte-Carlo simulations */
+
+void MonteCarloVanilla::compute_price(const deque<double> &normals){
+/* monte-carlo simulation pricer for PLAIN VANILLA options
+ * inputs: N - the total number of uniform random numbers to be generated
+ * output: the simulated option delta
  */
 
-    // the use_control_variate and use_moment_matching cannot both be true
-    assert(!use_control_variate || !use_moment_matching);
-    // the use_control_variate and use_moment_matching can be used only when the number of time steps
-    //      for the simulation in one pass is 1, i.e. pricing vanilla options
-    if(use_control_variate || use_moment_matching){ assert(random.get_step()==1); }
-    assert(n>=1);
-
-    // wrap the payoff and random number generator object so that the objects being passed
-    //      in is not affected by whatever operations inside the function
-    Wrapper<Payoff> payoff_ptr(payoff);
-    Wrapper<Random> random_ptr(random);
-
-    // the delta_t that should be used in the simulation - dt = t for vanilla options
-    double dt = t/random_ptr->get_step();
+    int n = normals.size();
     //risk-free discount factor
     double discount = exp(-r*t);
 
     // the data containers
-    StatGatherer gather;    //statistics gatherer
-    deque<double> normal;   //store the normal random numbers generated
-    deque<double> stockval; //store the intermediate stock values in one simulation
-    deque<double> s_T;      //store the stock value at maturity, will be used only if variance reduction
-                            //      methods are chosen
-
+    StatGatherer gather;    // statistics gatherer
+    deque<double> stockval; // store the stock value at maturity
+    deque<double> payoffs;  // the payoff of the option in each simulation
+    double one_normal;      // one generated normal number
+    double one_s;           // one simulated stock value
 
     for(int i=0; i<n; i++){
-        //get the normal random numbers
-        normal = random_ptr->get_normal();
-
-        //get the simulated stock prices in one pass - the loop will not run if the time step is 1
-        double s_stepwise = s * exp( (r-q-vol*vol/2.0)*dt + vol*sqrt(dt)*normal[0]);
-        for(int j=1; j<normal.size(); j++){
-            stockval.push_back(s_stepwise);
-            s_stepwise = s_stepwise * exp( (r-q-vol*vol/2.0)*dt + vol*sqrt(dt)*normal[j]);
-        }
-        stockval.push_back(s_stepwise);
-
-        //get the value at maturity
-        s_T.push_back(stockval[stockval.size()-1]);
-
-        //calculate the payoff for one pass and dump the result to the gatherer if moment-matching is no used
-        if(!use_moment_matching){
-            gather.dump_one_number(discount*payoff_ptr->payoff(stockval));
-        }
-
-        //clear data, do another pass
-        stockval.clear();
-    }
-
-    //control variate technique - the controlling variate is hard-coded
-    if(use_control_variate){
-
-        deque<double> result_old = gather.result_so_far();
-        double b_hat = get_b_hat(s_T, result_old);
-
-        //adjust the values, clear the gatherer, and push the new values into the gatherer
-        gather.clear();
-
-        double s_mean = exp(r*t) * s;
-        for(int i=0; i<result_old.size(); i++){
-            double adjusted = result_old[i] - b_hat * (s_T[i] - s_mean);
-            gather.dump_one_number(adjusted);
-        }
+        one_normal = normals[i];
+        double one_s = s * exp( (r-q-vol*vol/2.0)*t + vol*sqrt(t)*one_normal);
+        stockval.push_back(one_s);
     }
 
 
-    //moment matching technique - hard-coded as well
-    if(use_moment_matching){
-        //risk-neutral mean
-        double s_mean_rn = exp(r*t) * s;
+    if(use_moment_matching){ moment_matching_treatment(stockval); }
 
-        //get the simulated value average
-        double sum = 0;
-        for(int i=0; i<s_T.size(); i++){ sum += s_T[i]; }
-        double s_mean = sum/s_T.size();
-
-        //adjust the stock prices
-        for(int i=0; i<s_T.size(); i++){ s_T[i] = s_T[i] * s_mean_rn/s_mean; }
-
-        //push the payoffs into the getherer
-        gather.clear();
-        deque<double> payoffval;
-        for(int i=0; i<s_T.size(); i++){
-            payoffval.clear();
-            payoffval.push_back(s_T[i]);
-            gather.dump_one_number(discount*payoff_ptr->payoff(payoffval));
-        }
+    for(int i=0; i<n; i++){
+        if(type == "call"){ payoffs.push_back( max<double>(stockval[i] - k, 0)); }
+        if(type == "put"){ payoffs.push_back( max<double>(k - stockval[i], 0)); }
     }
 
-    return gather.mean();
+    if(use_control_variate){ control_variate_treatment(stockval, payoffs); }
+
+    price = mean(payoffs);
 }
 
-        
-/* monte carlo simulation for delta of PLAIN VANILLA options */
-double MonteCarlo::delta(int N, string type="call"){
-/*
- * inputs:
- *      type - the option type, default is call
- *
- * output:
- *      the simulated option delta
- *
+
+void MonteCarloVanilla::compute_delta(const deque<double> &normals){
+/* monte carlo simulation for delta of PLAIN VANILLA options
+ * inputs: N - the total number of uniform random numbers to be generated
+ * output: the simulated option price
  */
 
-    //the method works for non-path-dependent options, i.e. vanilla options with 1 step in every simulation
-    //      also make sure there is at least 1 simulation needed to be run
-    assert(n>=1 && random.get_step()==1);
-    assert(type=="call" || type=="put");
-
-    // wrap the random number generator object so that the objects being passed
-    //      in is not affected by whatever operations inside the function
-    Wrapper<Random> random_ptr(random);
-
+    int n = normals.size();
     // the data containers
-    StatGatherer gather;    //statistics gatherer
-    double normal;          //store the normal random number generated
-    double delta;           //the simulated delta
+    deque<double> deltas;   // collection of deltas
+    double one_delta;       // one simulated delta
+    double one_normal;      // one generated normal number
 
     for(int i=0; i<n; i++){
-        //get the normal random numbers
-        normal = random_ptr->get_normal()[0];
+        one_normal = normals[i];
 
         //get the simulated stock price
-        double s_t = s * exp((r-q-vol*vol/2.0)*t + vol*sqrt(t)*normal);
+        double s_t = s * exp((r-q-vol*vol/2.0)*t + vol*sqrt(t)*one_normal);
 
         if(type == "call" && s_t>k){
-            delta = exp(-r*t) * exp((r-q-vol*vol/2.0)*t + vol*sqrt(t)*normal);
-            gather.dump_one_number(delta);
+            one_delta = exp(-r*t) * exp((r-q-vol*vol/2.0)*t + vol*sqrt(t)*one_normal);
+            deltas.push_back(one_delta);
+        }
+        if(type == "put" && s_t<k){
+            one_delta = exp(-r*t) * exp((r-q-vol*vol/2.0)*t + vol*sqrt(t)*one_normal);
+            deltas.push_back(one_delta);
+        }
+    }
+    delta = mean(deltas);
+}
+
+void MonteCarloVanilla::compute_vega(const deque<double> &normals){
+/* monte-carlo for vega of PLAIN VANILLA options
+ * inputs: N - the total number of uniform random numbers to be generated
+ * output: the simulated option vega
+ */
+
+    int n = normals.size();
+
+    // the data containers
+    deque<double> vegas;     // collection of vegas
+    double one_vega;        // one simulated vega
+    double one_normal;      // one generated normal number
+
+    for(int i=0; i<n; i++){
+        one_normal = normals[i];
+
+        //get the simulated stock price
+        double s_t = s * exp((r-q-vol*vol/2.0)*t + vol*sqrt(t)*one_normal);
+
+        if(type == "call" && s_t>k){
+            one_vega = exp(-r*t) * (-vol*t + sqrt(t)*one_normal)*s_t;
+            vegas.push_back(one_vega);
         }
 
         if(type == "put" && s_t<k){
-            delta = exp(-r*t) * exp((r-q-vol*vol/2.0)*t + vol*sqrt(t)*normal);
-            gather.dump_one_number(delta);
+            one_vega = exp(-r*t) * (-vol*t + sqrt(t)*one_normal)*s_t;
+            vegas.push_back(one_vega);
         }
     }
 
-    return gather.mean();
+    vega = mean(vegas);
 }
 
-/* monte-carlo for vega of PLAIN VANILLA options */
-double vega(int N, string type="call");
+void MonteCarloVanilla::antithetic_treatment(deque<double> &normals){
 /*
- * inputs:
- *      type - the option type, default is call
- *
- * output:
- *      the simulated option vega
- *
+ * function to do the antithetic treatment to the random normals generated such that
+ * the negative of every standard normals that has been generated should also be
+ * in the normal number sequence
  */
+    int n = normals.size(); // size before the change
 
-    //the method works for non-path-dependent options, i.e. vanilla options with 1 step in every simulation
-    //      also make sure there is at least 1 simulation needed to be run
-    assert(n>=1 && random.get_step()==1);
-    assert(type=="call" || type=="put");
-
-    // wrap the random number generator object so that the objects being passed
-    //      in is not affected by whatever operations inside the function
-    Wrapper<Random> random_ptr(random);
-
-    // the data containers
-    StatGatherer gather;    //statistics gatherer
-    double normal;          //store the normal random number generated
-    double vega;            //the simulated vega
-
-    for(int i=0; i<n; i++){
-        //get the normal random numbers
-        normal = random_ptr->get_normal()[0];
-
-        //get the simulated stock price
-        double s_t = s * exp((r-q-vol*vol/2.0)*t + vol*sqrt(t)*normal);
-
-        if(type == "call" && s_t>k){
-            vega = exp(-r*t) * (-vol*t + sqrt(t)*normal)*s_t;
-            gather.dump_one_number(vega);
-        }
-
-        if(type == "put" && s_t<k){
-            vega = exp(-r*t) * (-vol*t + sqrt(t)*normal)*s_t;
-            gather.dump_one_number(vega);
-        }
-    }
-
-    return gather.mean();
+    //make changes on the deque of normals directly
+    for(int i=0; i<n; i++){ normals.push_back(-normals[i]); }
+    return;
 }
+
+void MonteCarloVanilla::control_variate_treatment(deque<double> &stockvals, deque<double> &payoffs){
+/* control variate technique - the controlling variate is hard-coded as the stock price
+ * the changes is going to be made on the deque of payoffs directly
+ */
+    double b_hat = get_b_hat(stockvals, payoffs);
+
+    //the risk-neutral expected value
+    double s_mean = exp(r*t) * s;
+
+    for(int i=0; i<payoffs.size(); i++){
+        payoffs[i] = payoffs[i] - b_hat * (stockvals[i] - s_mean);
+    }
+    return;
+}
+
+void MonteCarloVanilla::moment_matching_treatment(deque<double> &stockvals){
+/* moment matching technique - hard-coded as well - it matches the first moment of the stock prices
+ * the changes will be made on the deque of stockvals directly
+ */
+    // risk-neutral mean
+    double s_mean_rn = exp(r*t) * s;
+    // the simulated value average
+    double s_mean = mean(stockvals);
+
+    //adjust the stock prices
+    for(int i=0; i<stockvals.size(); i++){ stockvals[i] = stockvals[i] * s_mean_rn/s_mean; }
+    return;
+}
+
+double MonteCarloVanilla::mean(const deque<double> &input){
+    double sum = 0;
+    for(int i=0; i<input.size(); i++){ sum = sum + input[i]; }
+    double avg = sum/input.size();
+    return avg;
+}
+
+
+
 

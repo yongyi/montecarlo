@@ -2,8 +2,6 @@
 Monte-Carlo
 ===========
 
-*need to debug*
-
 A simple implementation of the Monte-Carlo simulation for pricing options.
 
 *Contents:*
@@ -24,10 +22,6 @@ A simple implementation of the Monte-Carlo simulation for pricing options.
 
 6.randomacceptreject: the random number generator that uses Acceptance-Rejection method to
                        generate standard normals from uniforms in (0,1).
-
-7.antithetic: the random number generator that takes an underlying generator (item 4, 5, or 6)
-               and applies the antithetic variance reduction technique to generate standard
-               normals.
 
 8.wrapper: template wrapper to handle pointers and memory management.
 
@@ -68,11 +62,35 @@ Nov.20: Corrected minor issue in the Monte-Carlo simulation function - forgot to
         the declaration of the get_uniform() and get_normal() functions to make them more flextible to
         fit the use of Monte-Carlo simulation (takes in arguments to know how many random numbers needed
         to be generated and how many simulations needed to perform in the whole simulation, returns a 
-        2-dimensional deque of doubles). 
+        2-dimensional deque of doubles).
+
         
         
-Dec.5 -- Started Version 2.0 of the Monte-Carlo pricer to better fit the requirement of the course and to increase convenience of use.
+*Dec.5 -- Started Version 2.0 of the Monte-Carlo pricer to better performs the tasks of the course so that it is easier to use and understand*
+
+
+*What Happened: The Monte-Carlo class will be splitted into two separate classes: the Monte-Carlo General and Monte-Carlo Vanilla.
+Monte-Carlo General will be responsible for pricing any kind of options given the payoff defition of the option regardless its 
+path-dependency. The Monte-Carlo Vanilla is used only to price European put or call options, along with the option's simulated delta
+and vega, with a choice of the variance reduction technique.*
+
+
+*Reason for the change: even though the two Monte-Carlo classes are very similar, there are additions as well as subtractions in
+the Monte-Carlo Vanilla compared to Monte-Carlo General. The Monte-Carlo Vanilla is also responsible for estimating deltas and vegas
+of the European options while the Monte-Carlo General only serves as a pricer. In order to make sure the simulated values of the price,
+delta, vega of a given vanilla option come from the same sequence of random numbers, the designed and structure of the simulation
+functions in the two classes ought to be different. In addition, the interface and codes will be clearer, easier to understand and use if 
+the Monte-Carlo is broken into two different classes in this case - a praticability issue*
+
 
 Dec.5: Separated Monte-Carlo into Monte-Carlo general and Monte-Carlo vanilla such that the general
        can be used to price ANY options with any forms of payoffs; the vanilla will be used only to
        price vanilla European options (call or put) and the corresponding greeks.
+       
+       Redefined the random number gernerators' get_uniform() and get_normal functions. The get_uniform() function
+       takes in an integer N as the number of uniformed needed to be generated and the get_normal() takes 
+       in the integer N which is to be passed to get_uniform() to generated N uniforms, then converts the N
+       uniforms into normals by the chosen method. The Monte-Carlo General class will get the normals from
+       the generator and converts them into a n simulations * m steps per simulation grid for simulation.
+
+Dec.6: Finshed the implementation of Monte-Carlo General and Monte-Carlo Vanilla.
