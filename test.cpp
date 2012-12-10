@@ -48,9 +48,9 @@ int main(){
     cout << "ar" << general_3.price(5120000, 1) << endl;
     */
 
-    MonteCarloVanilla vanilla_1(50, 55, 0.3, 0.5, 0.04, 0, "put", bsm);
-    MonteCarloVanilla vanilla_2(50, 55, 0.3, 0.5, 0.04, 0, "put", box);
-    MonteCarloVanilla vanilla_3(50, 55, 0.3, 0.5, 0.04, 0, "put", ar);
+    MonteCarloVanilla vanilla_1(50, 55, 0.3, 0.5, 0.04, 0, "put", bsm, true, false, false);
+    MonteCarloVanilla vanilla_2(50, 55, 0.3, 0.5, 0.04, 0, "put", bsm, false, true, false);
+    MonteCarloVanilla vanilla_3(50, 55, 0.3, 0.5, 0.04, 0, "put", bsm, false, false, true);
 
     vanilla_1.run_monte_carlo(5120000);
     vanilla_2.run_monte_carlo(5120000);
@@ -58,7 +58,7 @@ int main(){
 
     cout << "bsm " << vanilla_1.get_price() << endl;
     cout << "box " << vanilla_2.get_price() << endl;
-    cout << "ar" << vanilla_3.get_price() << endl;
+    cout << "ar " << vanilla_3.get_price() << endl;
 
 /*
     RandomBsmoro bsm(N, seed);
