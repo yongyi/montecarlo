@@ -51,13 +51,13 @@ double MonteCarloGeneral::price(int N, int m){
             s_stepwise = s_stepwise * exp( (r-q-vol*vol/2.0)*dt + vol*sqrt(dt)*grid[i][j]);
         }
         stockval.push_back(s_stepwise);
-        gather.dump_one_number(discount * option->payoff(stockval));
+        gather.dump_one_number(option->payoff(stockval));
 
         //clear data, do another pass
         stockval.clear();
     }
 
-    return gather.mean();
+    return discount * gather.mean();
 }
 
 /* reset the random number generator */

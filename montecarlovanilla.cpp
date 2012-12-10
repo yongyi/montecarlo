@@ -15,7 +15,6 @@
 #include<string>
 
 #include"random.hpp"
-#include"statgatherer.hpp"
 #include"payoff.hpp"
 #include"wrapper.hpp"
 #include"montecarlovanilla.hpp"
@@ -112,7 +111,6 @@ void MonteCarloVanilla::compute_price(const deque<double> &normals){
     double discount = exp(-r*t);
 
     // the data containers
-    StatGatherer gather;    // statistics gatherer
     deque<double> stockval; // store the stock value at maturity
     deque<double> payoffs;  // the payoff of the option in each simulation
     double one_normal;      // one generated normal number
@@ -134,7 +132,7 @@ void MonteCarloVanilla::compute_price(const deque<double> &normals){
 
     if(use_control_variate){ control_variate_treatment(stockval, payoffs); }
 
-    price = mean(payoffs);
+    price = discount *  mean(payoffs);
 }
 
 
@@ -246,7 +244,7 @@ void MonteCarloVanilla::moment_matching_treatment(deque<double> &stockvals){
 double MonteCarloVanilla::mean(const deque<double> &input){
     double sum = 0;
     for(int i=0; i<input.size(); i++){ sum = sum + input[i]; }
-    double avg = sum/input.size();
+    double avg = sum/static_cast<double>(input.size());
     return avg;
 }
 

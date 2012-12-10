@@ -30,10 +30,36 @@ void print(const deque<double>& input){
 }
 
 int main(){
+    cout.precision(10);
 
     int seed = 1;
-    //int N = 10000 * pow(2,9);
-    int N = 10;
+
+    RandomBsmoro bsm(seed);
+    RandomBoxMuller box(seed);
+    RandomAcceptReject ar(seed);
+
+    //PutPayoff put(55);
+    /*
+    MonteCarloGeneral general_1(50, 0.3, 0.5, 0.04, 0, put, bsm);
+    MonteCarloGeneral general_2(50, 0.3, 0.5, 0.04, 0, put, box);
+    MonteCarloGeneral general_3(50, 0.3, 0.5, 0.04, 0, put, ar);
+    cout << "bsm: " << general_1.price(5120000, 1) << endl;
+    cout << "boxmuller" << general_2.price(5120000, 1) << endl;
+    cout << "ar" << general_3.price(5120000, 1) << endl;
+    */
+
+    MonteCarloVanilla vanilla_1(50, 55, 0.3, 0.5, 0.04, 0, "put", bsm);
+    MonteCarloVanilla vanilla_2(50, 55, 0.3, 0.5, 0.04, 0, "put", box);
+    MonteCarloVanilla vanilla_3(50, 55, 0.3, 0.5, 0.04, 0, "put", ar);
+
+    vanilla_1.run_monte_carlo(5120000);
+    vanilla_2.run_monte_carlo(5120000);
+    vanilla_3.run_monte_carlo(5120000);
+
+    cout << "bsm " << vanilla_1.get_price() << endl;
+    cout << "box " << vanilla_2.get_price() << endl;
+    cout << "ar" << vanilla_3.get_price() << endl;
+
 /*
     RandomBsmoro bsm(N, seed);
     RandomBoxMuller box(N, seed);
@@ -44,43 +70,22 @@ int main(){
     deque<double> holder;
 
     cout << "bsm" << endl;
-    holder = bsm.get_normal();
-    print(holder);
+    holder = bsm.get_normal(); print(holder);
 
     cout << "box" << endl;
     holder.clear();
-    holder = box.get_normal();
-    print(holder);
+    holder = box.get_normal(); print(holder);
 
     cout << "ar" << endl;
     holder.clear();
-    holder = ar.get_normal();
-    print(holder);
+    holder = ar.get_normal(); print(holder);
 
     cout << "anti" << endl;
     holder.clear();
-    holder = anti.get_normal();
-    print(holder);
+    holder = anti.get_normal(); print(holder);
 
     holder.clear();
-    holder = anti.get_normal();
-    print(holder);
-*/
-
-    /* demonstration of use of monte-carlo */
-/*
-    double s1 = 50;
-    double vol1 = 0.2;
-    double t1 = 0.5;
-    double r1 = 0.05;
-    double q1 = 0.03;
-    long n = 1000000;
-    CallPayoff call(50);
-    RandomBsmoro gen(1, 1);
-    bool use_control_variate = false;
-    bool use_moment_matching = true;
-    double price = monte_carlo(s1, vol1, t1, r1, q1, n, call, gen, use_control_variate, use_moment_matching);
-    cout << "price: " << price << endl;
+    holder = anti.get_normal(); print(holder);
 */
     cout << "Hello World" << endl;
 
